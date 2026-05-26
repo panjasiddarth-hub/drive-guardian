@@ -1,0 +1,92 @@
+version: "3.9"
+
+services:
+  # ─── MongoDB ───────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: dg-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - dg-net
+
+  # ─── Redis ─────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: dg-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - dg-net
+
+  # ─── RabbitMQ ──────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: dg-rabbit
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # Management UI → http://localhost:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - dg-net
+
+  # ─── Node.js Backend ───────────────────────────────────
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: dg-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./Backend/.env
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - RABBIT_URL=amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - mongo
+      - redis
+      - rabbitmq
+    networks:
+      - dg-net
+
+  # ─── Python ML Service ─────────────────────────────────
+  ml:
+    build:
+      context: ./Model
+      dockerfile: Dockerfile
+    container_name: dg-ml
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - dg-net
+
+  # ─── React Frontend ────────────────────────────────────
+  frontend:
+    build:
+      context: ./FrontEnd
+      dockerfile: Dockerfile
+    container_name: dg-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - dg-net
+
+volumes:
+  mongo_data:
+
+networks:
+  dg-net:
+    driver: bridge

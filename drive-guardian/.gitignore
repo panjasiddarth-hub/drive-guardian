@@ -1,0 +1,33 @@
+# Env files – NEVER commit these
+.env
+.env.local
+.env.production
+Backend/.env
+FrontEnd/.env
+
+# Dependencies
+node_modules/
+Backend/node_modules/
+FrontEnd/node_modules/
+
+# Build output
+FrontEnd/dist/
+FrontEnd/build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+Model/__pycache__/
+Model/*.egg-info/
+.venv/
+venv/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

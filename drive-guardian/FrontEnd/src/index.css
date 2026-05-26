@@ -1,0 +1,46 @@
+/* src/css/index.css – minimal working Tailwind v4 */
+
+@import "tailwindcss";
+
+/* Optional – your globals */
+:root {
+  --background: #0f172a;   /* → slate-950, very dark blue-gray */
+  --foreground: #f8fafc;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Layout helpers you already have */
+.app-container {
+  @apply flex min-h-screen;
+}
+
+.main-content {
+  @apply flex-1 p-6 bg-gray-50;   /* light fallback */
+}
+
+/* Test classes – should be visible immediately */
+.test-bg { @apply bg-blue-600 text-white p-6 rounded-xl shadow-xl; }
+.test-hover:hover { @apply bg-red-600 scale-105 transition-all; }
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: ripple 2s infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s infinite;
+}
