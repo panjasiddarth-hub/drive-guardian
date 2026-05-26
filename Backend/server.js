@@ -34,7 +34,7 @@ import { fetchOSRMRoute } from "./routes/tripRoutes.js";
 dotenv.config({ path: "./.env" });
 
 await connectDB();
-await connectRabbit();
+//await connectRabbit();
 const app = express();
 const server = http.createServer(app);
 
